@@ -2,11 +2,9 @@
 // H2A_SetSwitchOn.js
 // by Had2Apps
 // RPGツクールMV 1.5.0以降にて動作します。
-// Version: 2.0.1
+// Version: 2.0.2
 // License: MIT
 //=============================================================================
-
-var H2APG = H2APG || {};
 
 /*:
  * @plugindesc ゲーム開始時に指定のスイッチをONにし、タイトルをスキップします。
@@ -48,15 +46,37 @@ var H2APG = H2APG || {};
  *
  */
 
-H2APG.Parameters = PluginManager.parameters('H2A_SetSwitchOn');
-H2APG.Param = H2APG.Param || {};
-
-H2APG.Param.WakeUpSwitchID = Number(H2APG.Parameters['Switch ID']);
-H2APG.Param.SkipTitleFlug = H2APG.Parameters['Skip Title']=="true"?true:false;
-H2APG.Param.LoadSaveFlug = H2APG.Parameters['Load Save']=="true"?true:false;
-H2APG.Param.LoadSaveID = Number(H2APG.Parameters['Load Save ID']);
+var H2APG = H2APG || {};
 
 (function () {
+	//-----------------------------------------------------//
+	/* プラグイン名 */
+	var PluginName = 'H2A_SetSwitchOn';
+	/* 固有オブジェクト名 */
+	H2APG.SetSwitchOn = {};
+	//-----------------------------------------------------//
+
+	var getParam = function(names,type){
+		for (var i=0; i<names.length; i++) {
+            var n = PluginManager.parameters(PluginName)[names[i]];
+            if (n){
+				if(type=="number") return Number(n);
+				if(type=="string") return String(n);
+				if(type=="boolean") return n=="true"?true:false;
+				return n;
+			}
+		}
+		return null;	
+	};
+	
+	//-----------------------------------------------------//
+	/* パラメーター取得 */
+	var WakeUpSwitchID = getParam(['Switch ID'],"number");
+	var SkipTitleFlug = getParam(['Skip Title'],"boolean");
+	var LoadSaveFlug = getParam(['Load Save'],"boolean");
+	var LoadSaveID = getParam(['Load Save ID'],"number");
+	//-----------------------------------------------------//
+
 	DataManager.setupNewGame = function() {
 		this.createGameObjects();
 		this.selectSavefileForNewGame();
@@ -64,7 +84,7 @@ H2APG.Param.LoadSaveID = Number(H2APG.Parameters['Load Save ID']);
 		$gamePlayer.reserveTransfer($dataSystem.startMapId,
 			$dataSystem.startX, $dataSystem.startY);
 		Graphics.frameCount = 0;
-		$gameSwitches.setValue(H2APG.Param.WakeUpSwitchID,true);
+		$gameSwitches.setValue(WakeUpSwitchID,true);
 	};
 
 	Scene_Boot.prototype.start = function() {
@@ -79,28 +99,22 @@ H2APG.Param.LoadSaveID = Number(H2APG.Parameters['Load Save ID']);
         } else {
             this.checkPlayerLocation();
             DataManager.setupNewGame();
-            if(H2APG.Param.SkipTitleFlug){
-				if(H2APG.Param.LoadSaveFlug){
-					DataManager.loadGame(H2APG.Param.LoadSaveID); 
+            if(SkipTitleFlug){
+				if(LoadSaveFlug){
+					DataManager.loadGame(LoadSaveID); 
 					Scene_Load.prototype.reloadMapIfUpdated(); 
 					SceneManager.goto(Scene_Map); 
 					$gameSystem.onAfterLoad(); 
 				}else{
 					SceneManager.goto(Scene_Map);
 				}
-				$gameSwitches.setValue(H2APG.Param.WakeUpSwitchID,true);
+				$gameSwitches.setValue(WakeUpSwitchID,true);
             }else{
                 SceneManager.goto(Scene_Title);
                 Window_TitleCommand.initCommandPosition();
             }
         }
         this.updateDocumentTitle();
-	}
-
-	$gameSystem.onAfterLoad = function () {
-		Graphics.frameCount = this._framesOnSave;
-		AudioManager.playBgm(this._bgmOnSave);
-		AudioManager.playBgs(this._bgsOnSave);
 	}
 
 
