@@ -2,7 +2,7 @@
 // H2A_UserPerspMes.js
 // by Had2Apps
 // RPGツクールMV 1.5.0以降にて動作します。
-// Version: 1.1
+// Version: 1.2
 // License: MIT
 //=============================================================================
 
@@ -150,7 +150,8 @@
  * MD Editorで設定した内容は「H2APG.UserPerspMes.setMesDec」関数で変更できます。
  * なので途中で変更したい場合は、
  * スクリプトコマンドで以下のように設定することで実現することができます。
- * 
+ * ただし、セーブデータには変更が記録されませんのでご注意ください。
+ * ////////////////////////////////
  * H2APG.UserPerspMes.setMesDec([
  *   "", // 1 行目の 先頭
  *   "", // 1 行目の 最後
@@ -161,9 +162,21 @@
  *   "", // 4 行目の 先頭
  *   ""  // 4 行目の 最後
  * ]);
+ * ////////////////////////////////
+ * 
+ * プラグインのパラメータ設定画面での設定に戻したい場合は
+ * ////////////////////////////////
+ * H2APG.UserPerspMes.defMesDec();
+ * ////////////////////////////////
+ * を実行してください。
  * 
  * また、配列「H2APG.UserPerspMes.mesDecorator」に直接書き込むこともできますが、
  * あまり推奨しません。
+ * 
+ * 使い方の例としては、
+ * 台詞用・立て看板用・イベント用など用途別に設定したスクリプトコマンドを
+ * コモンイベントにそれぞれ登録しておき、
+ * 必要なシーンで会話等が始まる直前に呼び出すといった方法がお勧めです。
  *
  */
 
@@ -210,6 +223,10 @@ var H2APG = H2APG || {};
 		}
 		H2APG.UserPerspMes.mesDecorator = b;
 	};
+
+	H2APG.UserPerspMes.defMesDec = function(){
+		H2APG.UserPerspMes.mesDecorator = H2APG.UserPerspMes.mesDecDef;
+	};
 	
 	//-----------------------------------------------------//
 	/* パラメーター取得 */
@@ -219,6 +236,7 @@ var H2APG = H2APG || {};
 	var fastKey = getParam(['Fast Key'],"string");
 	var enableMA = getParam(['Enable Mes Decorator'],"boolean");
 	H2APG.UserPerspMes.setMesDec(getParam(['MD Editor'],"array"));
+	H2APG.UserPerspMes.mesDecDef = H2APG.UserPerspMes.mesDecorator;
 	//-----------------------------------------------------//
 
 	Window_Message.prototype.updateShowFast = function() {
