@@ -1,5 +1,5 @@
 //=============================================================================
-// H2A_PictMaster.js v1.0
+// H2A_PictMaster.js v1.1
 //=============================================================================
 
 /*:
@@ -61,7 +61,7 @@ var H2A_PictMaster = H2A_PictMaster || {};
             var add = picList.map(function(v){return {
                 code: 231,
                 indent: 0,
-                parameters: [1,v,0,0,0,0,100,100,0,0],
+                parameters: [1,v.split(".")[0],0,0,0,0,100,100,0,0],
             }});
             data[id].list = add.concat(data[id].list);
             fs.writeFileSync(comm,JSON.stringify(data));
