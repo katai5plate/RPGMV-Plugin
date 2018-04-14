@@ -15,9 +15,11 @@ RPGツクールMVのプラグイン配布所。気に入ったら「★Star」�
 マップ上のイベントのセルフスイッチを操作しやすくします。
 ```js
 // イベントIDが 10 番のマップイベントのセルフスイッチ A を ON にする。
-H2APG.SSRemote(10,"A",true);
+H2APG.SSRemote( 10, "A", true );
 // イベント名に「 ドア 」が含まれるのマップイベントのセルフスイッチ B を OFF にする。
-H2APG.SSRemote("ドア","B",false);
+H2APG.SSRemote( "ドア", "B", false );
+// 呼び出し先のマップイベントのセルフスイッチ C を 逆転 にする。
+H2APG.SSRemote( this._eventId, "C", null);
 ```
 
 # 制作支援関連
