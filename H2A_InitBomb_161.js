@@ -1,5 +1,5 @@
 //=============================================================================
-// H2A_InitBomb_161.js v2.0
+// H2A_InitBomb_161.js v2.1
 //=============================================================================
 
 /*:
@@ -42,7 +42,6 @@
  * ・戦闘背景をクリア
  * 
  * 次期アップデート予定：
- * ・オプション：アニメーションを消すかどうか
  * ・オプション：効果音を全消しするかどうか
  * ・どの分類のどの部分を消すかを細かく設定できるようにする
  */
@@ -166,6 +165,23 @@ var H2A_InitBomb = H2A_InitBomb || {};
                 iconIndex: 0,
                 traits: [],
             });
+
+            if (window.confirm("タイルセットを 1番 のみにしますか？")) {
+                rwone("data/Tilesets.json");
+            }
+            if (window.confirm("アニメーションを 全削除 しますか？")) {
+                rwone("data/Animations.json", {
+                    animation1Hue: 0,
+                    animation1Name: "",
+                    animation2Hue: 0,
+                    animation2Name: "",
+                    frames: [],
+                    id: 1,
+                    name: "",
+                    position: 1,
+                    timings: [],
+                });
+            }
 
             alert("JSONの白紙化が完了しました。");
             alert(
